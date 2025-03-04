@@ -29,7 +29,7 @@ const SettingItem= ({icon,title,onPress,textStyle,showArrow = true}:SettingItemP
         
     
 }
-const profile = () => {
+const Profile = () => {
     const {user , refetch} = useGlobalContext();
 
     const hundelLogout = async() => {
@@ -83,4 +83,4 @@ const profile = () => {
     )
 }
 
-export default profile
+export default Profile
