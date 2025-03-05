@@ -23,11 +23,11 @@ const Filter = () => {
         >
             {categories.map((item, index) => (
                 <TouchableOpacity key={index}
-                    className={`flex flex-col items-start mr-2 px-4 py-2 rounded-full  ${category === item.title ? 'bg-primary-300' : 'bg-primary-100 border border-primary-200'}`}
-                    onPress={() => handleFilterPress(item.title)}
+                    className={`flex flex-col items-start mr-2 px-4 py-2 rounded-full  ${category === item.category ? 'bg-primary-300' : 'bg-primary-100 border border-primary-200'}`}
+                    onPress={() => handleFilterPress(item.category)}
                 >
                     <Text
-                    className={`${category === item.title ? 'text-white font-rubikBold mt-0.5' : 'text-black-300'} `}
+                    className={`${category === item.category ? 'text-white font-rubikBold mt-0.5' : 'text-black-300'} `}
                     >{item.title}</Text>
                 </TouchableOpacity>)
             )}

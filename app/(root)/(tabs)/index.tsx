@@ -1,4 +1,4 @@
-import { Button, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { Button, FlatList, Image, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import images from "~/constants/images";
 import icons from "~/constants/icons";
@@ -10,17 +10,18 @@ import { getLatestProperty, getProperties } from "~/lib/appwrite";
 import { useAppwrite } from "~/lib/useAppwrite";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
+import NoResults from "~/components/noResults";
 
 const Home = () => {
   const { user } = useGlobalContext()
 
-  const params = useLocalSearchParams<{query?: string; filter?:string}>()
+  const params = useLocalSearchParams<{ query?: string; filter?: string }>()
 
-  const {data: latestProperties, loading: latestPropertiesLoading} = useAppwrite({
+  const { data: latestProperties, loading: latestPropertiesLoading } = useAppwrite({
     fn: getLatestProperty,
   })
 
-  const {data: properties, loading: propertiesLoading, refetch} = useAppwrite({
+  const { data: properties, loading: propertiesLoading, refetch } = useAppwrite({
     fn: getProperties,
     params: {
       filter: params.filter!,
@@ -29,11 +30,11 @@ const Home = () => {
     },
     skip: true,
   })
-  const handelCardPress = (id:string)=>{
+  const handelCardPress = (id: string) => {
     router.push(`/properties/${id}`);
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     refetch(
       {
         filter: params.filter!,
@@ -41,14 +42,14 @@ const Home = () => {
         limit: 6,
       }
     )
-  },[params.query, params.filter])
+  }, [params.query, params.filter])
 
   return (
     <SafeAreaView className="bg-white h-full">
       <FlatList
         data={properties}
-        renderItem={({ item }) => <Card item={item}  onPress={()=>handelCardPress(item?.$id)}/>}
-        keyExtractor={(item) => item.toString()}
+        renderItem={({ item }) => <Card item={item} onPress={() => handelCardPress(item?.$id)} />}
+        keyExtractor={(item: any) => item.$id}
         numColumns={2}
         contentContainerClassName="pb-32 "
         columnWrapperClassName="flex gap-5 px-5"
@@ -71,19 +72,20 @@ const Home = () => {
             </View>
             <Search />
             <View className="my-5">
-              <View className="flex flex-row items-center justify-between">
+              <View className={`flex flex-row items-center justify-between ${(!latestProperties && latestProperties!.length === 0)? 'hidden' : ''}`}>
                 <Text className="text-xl font-rubikBold text-black-300">Featured</Text>
                 <TouchableOpacity><Text className="text-base font-rubikBold text-primary-300">See All</Text></TouchableOpacity>
               </View>
-              <FlatList
-                data={latestProperties}
-                renderItem={({ item }) => <FeaturedCard item={item}  onPress={()=>handelCardPress(item?.$id)}/>}
-                keyExtractor={(item) => item.toString()}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                bounces={false}
-                contentContainerClassName="mt-5 gap-5 mt-5" />
-
+              {latestPropertiesLoading ? <ActivityIndicator className="text-primary-300 mt-5" size="large" /> :
+                !latestProperties && latestProperties!.length === 0 ? <NoResults /> : <FlatList
+                  data={latestProperties}
+                  renderItem={({ item }) => <FeaturedCard item={item} onPress={() => handelCardPress(item?.$id)} />}
+                  keyExtractor={(item:any) => item.$id}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  bounces={false}
+                  contentContainerClassName="mt-5 gap-5 mt-5" />
+              }
             </View>
             <View className="flex flex-row items-center justify-between">
               <Text className="text-xl font-rubikBold text-black-300">Our Recommandation</Text>
@@ -93,6 +95,11 @@ const Home = () => {
 
 
           </View>
+        }
+        ListEmptyComponent={
+          propertiesLoading ? (
+            <ActivityIndicator className="text-primary-300 mt-5" size="large" />
+          ) : <NoResults />
         }
 
       />
