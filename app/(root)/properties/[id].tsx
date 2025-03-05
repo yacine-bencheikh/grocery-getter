@@ -5,7 +5,7 @@ const property = () => {
     const { id } = useLocalSearchParams()
     return (
         <View>
-            <Text>property</Text>
+            <Text>property {id}</Text>
         </View>
     )
 }
