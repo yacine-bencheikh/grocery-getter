@@ -72,7 +72,7 @@ const Home = () => {
             </View>
             <Search />
             <View className="my-5">
-              <View className={`flex flex-row items-center justify-between ${(!latestProperties && latestProperties!.length === 0)? 'hidden' : ''}`}>
+              <View className={`flex flex-row items-center justify-between ${(!latestProperties )? 'hidden' : ''}`}>
                 <Text className="text-xl font-rubikBold text-black-300">Featured</Text>
                 <TouchableOpacity><Text className="text-base font-rubikBold text-primary-300">See All</Text></TouchableOpacity>
               </View>
